@@ -426,7 +426,7 @@
   <script>
       // Base64 encoded images (simple SVG placeholders)
       const image1Base64 = 'image1.jpg'; // أو المسار الكامل للصورة
-const image2Base64 = 'image2.jpg'; // أو المسار الكامل للصورة
+      const image2Base64 = 'image2.jpg'; // أو المسار الكامل للصورة
       // Gift texts as provided by the user
       const giftText1 = `الواحد يا نونو اللي هو العبد لله انا يعني كان من غير مصدر طاقة
 من غير مصدر للدفع لقدام من غير دليل من غير خريطة
@@ -742,7 +742,10 @@ const image2Base64 = 'image2.jpg'; // أو المسار الكامل للصور�
   </script>
 </body>
 </html>
-<audio id="romanticAudio" src="romantic-music.mp3"></audio>
+<audio id="romanticAudio" loop>
+  <source src="romantic-music.mp3" type="audio/mpeg">
+  <source src="romantic-music.ogg" type="audio/ogg">
+</audio>
 
 <script>
   const romanticAudio = document.getElementById('romanticAudio');
