@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>من قلبي لبسملة ♥️♥️</title>
+  <style>
+      /* CSS Variables for consistent theming */
+      :root {
+          --primary-color: #ff6b6b; /* Soft Red for accents */
+          --secondary-color: #ffe6e6; /* Light Pink for backgrounds/buttons */
+          --text-color: #4a4a4a; /* Dark Grey for general text */
+          --background-gradient-start: #fceabb; /* Warm Yellow for background */
+          --background-gradient-end: #f8b500; /* Warm Orange for background */
+          --heart-color: #ff6b6b; /* Color of falling hearts */
+          --confetti-color-1: #ff6b6b; /* Confetti colors */
+          --confetti-color-2: #ffcc00;
+          --confetti-color-3: #a8e6cf;
+      }
+
+      /* Base Body Styling */
+      body {
+          margin: 0;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font */
+          background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+          color: var(--text-color);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          overflow: hidden; /* Hide scrollbars for full-screen effect */
+          direction: rtl; /* Right-to-Left text direction */
+          text-align: center;
+          position: relative;
+      }
+
+      /* Animated Hearts Background */
+      .heart-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          pointer-events: none; /* Allow clicks to pass through */
+          z-index: 0; /* Behind other content */
+      }
+
+      .heart {
+          position: absolute;
+          background-color: var(--heart-color);
+          transform: rotate(-45deg); /* Shape of a heart */
+          animation: fall linear infinite;
+          opacity: 0;
+          border-radius: 50% 50% 0 0; /* Top two corners rounded */
+      }
+
+      .heart::before,
+      .heart::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-color: inherit;
+          border-radius: 50%;
+      }
+
+      .heart::before {
+          left: -50%;
+      }
+
+      .heart::after {
+          top: -50%;
+      }
+
+      /* Keyframe animation for falling hearts */
+      @keyframes fall {
+          0% {
+              transform: translateY(-10vh) rotate(-45deg);
+              opacity: 0;
+          }
+          10% {
+              opacity: 0.8;
+          }
+          100% {
+              transform: translateY(100vh) rotate(-45deg);
+              opacity: 0;
+          }
+      }
+
+      /* General Screen Styling */
+      .screen {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white overlay */
+          backdrop-filter: blur(5px); /* Subtle blur effect */
+          transition: opacity 0.5s ease-in-out;
+          opacity: 0;
+          visibility: hidden; /* Hidden by default */
+          z-index: 1; /* Above background hearts */
+          padding: 20px;
+          box-sizing: border-box; /* Include padding in element's total width and height */
+      }
+
+      .screen.active {
+          opacity: 1;
+          visibility: visible;
+      }
+
+      /* Title Screen */
+      #title-screen h1 {
+          font-size: clamp(2.5em, 8vw, 5em); /* Responsive font size */
+          color: var(--primary-color);
+          margin-bottom: 40px;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      }
+
+      /* General Button Styling */
+      .button {
+          background-color: var(--primary-color);
+          color: white;
+          border: none;
+          padding: 15px 30px;
+          font-size: clamp(1em, 4vw, 1.5em);
+          border-radius: 30px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+
+      .button:hover {
+          background-color: #e65c5c; /* Darker red on hover */
+          transform: translateY(-3px); /* Slight lift effect */
+      }
+
+      /* Quiz Screen */
+      #quiz-screen {
+          justify-content: flex-start; /* Align content to top */
+          padding-top: 10vh;
+      }
+
+      #quiz-screen .progress {
+          font-size: clamp(1em, 3vw, 1.2em);
+          margin-bottom: 30px;
+          color: var(--text-color);
+      }
+
+      #quiz-screen .question-text {
+          font-size: clamp(1.5em, 5vw, 2.5em);
+          margin-bottom: 40px;
+          color: var(--primary-color);
+          max-width: 90%;
+      }
+
+      .choices-container {
+          display: flex;
+          flex-direction: column;
+          gap: 15px; /* Space between choice buttons */
+          width: 80%;
+          max-width: 600px;
+      }
+
+      .choice-button {
+          background-color: var(--secondary-color);
+          color: var(--text-color);
+          border: 2px solid var(--primary-color);
+          padding: 12px 20px;
+          font-size: clamp(0.9em, 3.5vw, 1.3em);
+          border-radius: 25px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .choice-button:hover {
+          background-color: var(--primary-color);
+          color: white;
+          transform: translateY(-2px);
+      }
+
+      /* Congratulation Screens */
+      .congrats-message {
+          font-size: clamp(2em, 7vw, 4em);
+          color: var(--primary-color);
+          margin-bottom: 40px;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .gift-boxes-container {
+          display: flex;
+          flex-direction: row; /* Horizontal layout for gift boxes */
+          gap: 30px;
+          margin-top: 40px;
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+      }
+
+      .gift-box {
+          width: clamp(120px, 25vw, 200px); /* Responsive size */
+          height: clamp(120px, 25vw, 200px);
+          background-color: #f0f0f0;
+          border: 5px solid var(--primary-color);
+          border-radius: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: clamp(3em, 8vw, 5em); /* Emoji size */
+          color: var(--primary-color);
+          cursor: pointer;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .gift-box:hover {
+          transform: translateY(-10px) scale(1.05);
+          box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+      }
+
+      .gift-box::before {
+          content: '🎁'; /* Gift emoji as content */
+          position: absolute;
+          font-size: 1em; /* Relative to parent font-size */
+      }
+
+      /* Gift Modal */
+      .gift-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 100; /* On top of everything */
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.3s ease;
+      }
+
+      .gift-modal-overlay.active {
+          opacity: 1;
+          visibility: visible;
+      }
+
+      .gift-modal-content {
+          background-color: white;
+          padding: 30px;
+          border-radius: 20px;
+          max-width: 90vw;
+          max-height: 90vh;
+          overflow: hidden; /* Hide scrollbars initially */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          transform: scale(0.8); /* Start smaller for transition */
+          transition: transform 0.3s ease;
+      }
+
+      .gift-modal-overlay.active .gift-modal-content {
+          transform: scale(1); /* Scale up when active */
+      }
+
+      .gift-modal-content img {
+          max-width: 100%;
+          max-height: 70vh; /* Limit image height */
+          border-radius: 10px;
+          object-fit: contain; /* Ensure image fits without cropping */
+      }
+
+      .gift-modal-content .scrollable-text {
+          max-height: 70vh; /* Limit text block height */
+          overflow-y: auto; /* Vertical scroll only */
+          white-space: pre-wrap; /* Preserve line breaks from JS string */
+          direction: rtl; /* Ensure RTL for text content */
+          text-align: justify; /* Justify text for better readability */
+          padding-left: 15px; /* Space for scrollbar on left in RTL */
+          padding-right: 5px;
+          font-size: clamp(0.9em, 3.5vw, 1.2em);
+          line-height: 1.8;
+          color: #333;
+      }
+
+      .gift-modal-content .close-button {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: none;
+          border: none;
+          font-size: 2em;
+          cursor: pointer;
+          color: var(--text-color);
+          transition: transform 0.2s ease;
+      }
+
+      .gift-modal-content .close-button:hover {
+          transform: rotate(90deg);
+      }
+
+      /* Confetti Effect */
+      .confetti-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          overflow: hidden;
+          z-index: 50;
+      }
+
+      .confetti {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background-color: var(--confetti-color-1);
+          animation: confetti-fall linear forwards;
+          opacity: 0;
+      }
+
+      /* Keyframe animation for confetti */
+      @keyframes confetti-fall {
+          0% {
+              transform: translateY(-10vh) rotate(0deg);
+              opacity: 0;
+          }
+          10% {
+              opacity: 1;
+          }
+          100% {
+              transform: translateY(100vh) rotate(720deg);
+              opacity: 0;
+          }
+      }
+
+      /* Final Ending Screen */
+      #final-ending h1 {
+          font-size: clamp(2em, 7vw, 4em);
+          color: var(--primary-color);
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      }
+
+      /* Responsive adjustments for smaller screens */
+      @media (max-width: 768px) {
+          .choices-container {
+              width: 95%;
+          }
+          .gift-boxes-container {
+              flex-direction: column; /* Stack gift boxes vertically on small screens */
+              gap: 20px;
+          }
+          .gift-box {
+              width: clamp(150px, 40vw, 250px);
+              height: clamp(150px, 40vw, 250px);
+          }
+      }
+
+      /* Audio Control Button */
+      #audio-control {
+          position: fixed;
+          bottom: 20px;
+          left: 20px;
+          background: rgba(255,255,255,0.7);
+          border: none;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          font-size: 24px;
+          cursor: pointer;
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      }
+  </style>
+</head>
+<body>
+  <!-- Container for animated background hearts -->
+  <div class="heart-container"></div>
+
+  <!-- Title Screen -->
+  <div id="title-screen" class="screen active">
+      <h1>من قلبي لبسملة ♥️♥️</h1>
+      <button class="button" onclick="startGame()">ابدئي اللعبة</button>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div id="quiz-screen" class="screen">
+      <div class="progress" id="quiz-progress">سؤال 1 من 5</div>
+      <h2 class="question-text" id="question-text"></h2>
+      <div class="choices-container" id="choices-container">
+          <!-- Quiz choices will be dynamically injected here by JavaScript -->
+      </div>
+  </div>
+
+  <!-- Level 1 Congratulation Screen -->
+  <div id="level1-congrats" class="screen">
+      <h1 class="congrats-message">افضل ميس في العالم ♥️♥️ كملي</h1>
+      <div class="gift-boxes-container">
+          <div class="gift-box" onclick="openGift('image', 'image1')"></div>
+          <div class="gift-box" onclick="openGift('text', 'text1')"></div>
+      </div>
+  </div>
+
+  <!-- Level 2 Congratulation Screen -->
+  <div id="level2-congrats" class="screen">
+      <h1 class="congrats-message">كل الطرق تؤدي الي انك اذكي بسبوساية في الكون ♥️♥️</h1>
+      <div class="gift-boxes-container">
+          <div class="gift-box" onclick="openGift('image', 'image2')"></div>
+          <div class="gift-box" onclick="openGift('text', 'text2')"></div>
+      </div>
+  </div>
+
+  <!-- Final Ending Screen -->
+  <div id="final-ending" class="screen">
+      <h1 class="congrats-message">بحبك اوي يبسبوستي ياللي محليه حياتي♥️♥️</h1>
+  </div>
+
+  <!-- Gift Modal Overlay -->
+  <div class="gift-modal-overlay" id="gift-modal-overlay">
+      <div class="gift-modal-content">
+          <button class="close-button" onclick="closeGiftModal()">×</button>
+          <img id="gift-image" style="display: none;" alt="Gift Image">
+          <div id="gift-text" class="scrollable-text" style="display: none;"></div>
+      </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="victory-sound" src="victory.wav"></audio>
+  <audio id="romanticAudio" loop>
+    <source src="romantic-music.mp3" type="audio/mpeg">
+    <source src="romantic-music.ogg" type="audio/ogg">
+    المتصفح لا يدعم تشغيل الصوت
+  </audio>
+
+  <!-- Audio Control Button -->
+  <button id="audio-control" onclick="toggleAudio()">🔊</button>
+
+  <script>
+      // التعديل الأول: مسارات الصور
+      const image1Base64 = 'image1.jpg'; // تأكد من وجود الملف في نفس المجلد
+      const image2Base64 = 'image2.jpg'; // تأكد من وجود الملف في نفس المجلد
+
+      // النصوص الأصلية
+      const giftText1 = `الواحد يا نونو اللي هو العبد لله انا يعني كان من غير مصدر طاقة
+من غير مصدر للدفع لقدام من غير دليل من غير خريطة
+كان تايه
+اول ما رجعتلك وانتي وافقتي ف اخر 2024 كانت بداية الفترة بتاعة التغيير للاحسن
+خلتيني بقيت نسخة تانية خالص
+مفيش مقارنة بين محمد دلوقتي ومحمد زمان
+انا بجد ممتن ليكي♥️`;
+
+      const giftText2 = `🎁 من القلب... لبسملة 💌
+بسملة...
+بعد ما خلصتي كل الليفيلات، ووصلتي لنهاية اللعبة،
+حبيت أقولك إن كل لحظة فيها، وكل تفصيلة، وكل ضحكة ممكن تكون طلعت منك،
+كانت متخططة عشانك إنتي... وبس.
+مش دي مجرد هدية،
+ولا كانت لعبة تفكري فيها وتعديها.
+دي كانت حاجة صغيرة بحاول أقولك بيها قد إيه وجودك له طعم تاني.
+عارفة، وأنتي بتجاوبي، أنا كنت بتخيلك بتبتسمي،
+وبتحمسي كل مرة، وبفرح...
+لأني كنت بحس إني جنبك، حتى لو من بعيد.
+إنتي مش شخص عادي،
+إنتي نونو القلب، وضحكة الأيام،
+إنتي الورق عنب اللي ملوش حل،
+وإنتي البسبوسة اللي مهما كانت حلوة… تفضلي أحلى منها.
+أنا يمكن مقلتش الكلام ده قبل كده،
+لكن لما عملت الموقع ده، كنت بحاول أقول إنك مميزة عندي،
+وإن في حاجات في قلبي ليكي... مهما ما اتقالتش، هي لسه هناك، عايشة، حقيقية.
+شكراً إنك كملتي للآخر...
+وشكراً إنك موجودة.
+ويا رب دايمًا تفضلي النور اللي بيعدي جوه اليوم... حتى لو اليوم عادي.
+بحبك؟
+يمكن الكلمة دي صغيرة على اللي جوايا،
+بس خليني أقولك ببساطة:
+"♥️♥️♥️♥️♥️♥️انتي أحلى حاجة حصلتلي... ومش بس في اللعبة دي."`;
+
+      // Quiz Data
+      const quizData = {
+          level1: [
+              {
+                  question: "What is the capital of France?",
+                  choices: ["Berlin", "Madrid", "Paris", "Rome"],
+                  correct: 2
+              },
+              {
+                  question: "Which planet is known as the Red Planet?",
+                  choices: ["Earth", "Mars", "Jupiter", "Venus"],
+                  correct: 1
+              },
+              {
+                  question: "What is the largest ocean on Earth?",
+                  choices: ["Atlantic", "Indian", "Arctic", "Pacific"],
+                  correct: 3
+              },
+              {
+                  question: "Who wrote 'Romeo and Juliet'?",
+                  choices: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                  correct: 1
+              },
+              {
+                  question: "What is the chemical symbol for water?",
+                  choices: ["O2", "H2O", "CO2", "NaCl"],
+                  correct: 1
+              }
+          ],
+          level2: [
+              {
+                  question: "ما هو ناتج 7 × 8؟",
+                  choices: ["49", "56", "63", "72"],
+                  correct: 1
+              },
+              {
+                  question: "إذا كان لديك 15 تفاحة وأكلت 3، فكم تفاحة تبقى لديك؟",
+                  choices: ["10", "12", "13", "18"],
+                  correct: 1
+              },
+              {
+                  question: "ما هو الجذر التربيعي للعدد 81؟",
+                  choices: ["7", "8", "9", "10"],
+                  correct: 2
+              },
+              {
+                  question: "إذا كانت الساعة الآن 3:00 مساءً، فكم ستكون الساعة بعد 5 ساعات؟",
+                  choices: ["7:00 مساءً", "8:00 مساءً", "9:00 مساءً", "10:00 مساءً"],
+                  correct: 1
+              },
+              {
+                  question: "ما هو العدد التالي في المتتالية: 2, 4, 6, 8, ...؟",
+                  choices: ["9", "10", "11", "12"],
+                  correct: 1
+              }
+          ]
+      };
+
+      let currentLevel = 1;
+      let currentQuestionIndex = 0;
+      let giftsOpenedCount = 0;
+      let isAudioPlaying = false;
+
+      // DOM Elements
+      const screens = {
+          'title-screen': document.getElementById('title-screen'),
+          'quiz-screen': document.getElementById('quiz-screen'),
+          'level1-congrats': document.getElementById('level1-congrats'),
+          'level2-congrats': document.getElementById('level2-congrats'),
+          'final-ending': document.getElementById('final-ending')
+      };
+
+      const quizProgress = document.getElementById('quiz-progress');
+      const questionText = document.getElementById('question-text');
+      const choicesContainer = document.getElementById('choices-container');
+      const victorySound = document.getElementById('victory-sound');
+      const romanticAudio = document.getElementById('romanticAudio');
+      const giftModalOverlay = document.getElementById('gift-modal-overlay');
+      const giftImage = document.getElementById('gift-image');
+      const giftText = document.getElementById('gift-text');
+      const audioControl = document.getElementById('audio-control');
+
+      // Audio Control Function
+      function toggleAudio() {
+          if (isAudioPlaying) {
+              romanticAudio.pause();
+              audioControl.textContent = "🔇";
+          } else {
+              romanticAudio.play().catch(e => {
+                  console.log("يجب تفعيل الصوت يدوياً: " + e);
+              });
+              audioControl.textContent = "🔊";
+          }
+          isAudioPlaying = !isAudioPlaying;
+      }
+
+      // Play Romantic Music Function
+      function playRomanticMusic() {
+          romanticAudio.currentTime = 0;
+          romanticAudio.volume = 0.5;
+          romanticAudio.play().then(() => {
+              isAudioPlaying = true;
+              audioControl.textContent = "🔊";
+          }).catch(e => {
+              console.log("يجب تفعيل الصوت يدوياً: " + e);
+          });
+      }
+
+      // Open Gift Function (Modified)
+      function openGift(type, contentId) {
+          giftImage.style.display = 'none';
+          giftText.style.display = 'none';
+
+          if (type === 'image') {
+              giftImage.src = contentId === 'image1' ? image1Base64 : image2Base64;
+              giftImage.style.display = 'block';
+          } else if (type === 'text') {
+              giftText.textContent = contentId === 'tex
